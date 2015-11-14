@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cooperate.fly.mapper.PackageVersionMapper" >
+  <resultMap id="BaseResultMap" type="com.cooperate.fly.bo.PackageVersion" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="submit_time" property="submitTime" jdbcType="DATE" />
+    <result column="package_id" property="packageId" jdbcType="INTEGER" />
+    <result column="version_id" property="versionId" jdbcType="INTEGER" />
+    <result column="parent_id" property="parentId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, submit_time, package_id, version_id, parent_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from package_version
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByPackageId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from package_version
+    where package_id = #{packageId,jdbcType=INTEGER}
+  </select>
+  <select id="selectCaogao" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from package_version
+    where version_id = 0 and package_id = #{packageId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from package_version
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.cooperate.fly.bo.PackageVersion" >
+    insert into package_version (id, submit_time, package_id, 
+      version_id, parent_id)
+    values (#{id,jdbcType=INTEGER}, #{submitTime,jdbcType=DATE}, #{packageId,jdbcType=INTEGER}, 
+      #{versionId,jdbcType=INTEGER}, #{parentId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cooperate.fly.bo.PackageVersion" >
+    insert into package_version
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="submitTime != null" >
+        submit_time,
+      </if>
+      <if test="packageId != null" >
+        package_id,
+      </if>
+      <if test="versionId != null" >
+        version_id,
+      </if>
+      <if test="parentId != null" >
+        parent_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="submitTime != null" >
+        #{submitTime,jdbcType=DATE},
+      </if>
+      <if test="packageId != null" >
+        #{packageId,jdbcType=INTEGER},
+      </if>
+      <if test="versionId != null" >
+        #{versionId,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cooperate.fly.bo.PackageVersion" >
+    update package_version
+    <set >
+      <if test="submitTime != null" >
+        submit_time = #{submitTime,jdbcType=DATE},
+      </if>
+      <if test="packageId != null" >
+        package_id = #{packageId,jdbcType=INTEGER},
+      </if>
+      <if test="versionId != null" >
+        version_id = #{versionId,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null" >
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cooperate.fly.bo.PackageVersion" >
+    update package_version
+    set submit_time = #{submitTime,jdbcType=DATE},
+      package_id = #{packageId,jdbcType=INTEGER},
+      version_id = #{versionId,jdbcType=INTEGER},
+      parent_id = #{parentId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="commitCaogao" parameterType="com.cooperate.fly.bo.PackageVersion" >
+    update package_version
+    set version_id = #{versionId,jdbcType=INTEGER}
+    where version_id = 0 and package_id = #{packageId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+   http://www.springframework.org/schema/beans    
+   http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+   http://www.springframework.org/schema/context
+   http://www.springframework.org/schema/context/spring-context-4.0.xsd
+   http://www.springframework.org/schema/mvc   
+   http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+	
+  
+        <!-- 配置自定义的SqlSessionTemplate模板，注入相关配置 -->
+    <bean id="sqlSessionTemplate" class="com.cooperate.fly.datasource.CustomSqlSessionTemplate">
+        <constructor-arg ref="CooperateFlySqlSessionFactory" />
+        <property name="targetSqlSessionFactorys">
+            <map>            	
+            	<entry value-ref="CooperateFlySqlSessionFactory" key="CooperateFly"/>
+            </map> 
+        </property>
+    </bean>
+    
+       <!-- 通过扫描的模式，扫描目录在com/hoo/任意目录下的mapper目录下，所有的mapper都需要继承SqlMapper接口的接口 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.cooperate.fly.mapper"/>
+        <!-- 注意注入sqlSessionTemplate -->
+        <property name="sqlSessionTemplateBeanName" value="sqlSessionTemplate"/>
+        <property name="annotationClass" value="com.cooperate.fly.datasource.SqlMapper"/>
+    </bean> 
+    
+    <!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->  
+    <bean id="transactionManager"  
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
+        <property name="dataSource" ref="dataSourceCooperateFly" />  
+    </bean>  
+	
+</beans>

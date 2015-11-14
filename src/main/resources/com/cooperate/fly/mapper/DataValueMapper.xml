@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cooperate.fly.mapper.DataValueMapper" >
+  <resultMap id="BaseResultMap" type="com.cooperate.fly.bo.DataValue" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="version_id" property="versionId" jdbcType="INTEGER" />
+    <result column="data_info_id" property="dataInfoId" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.cooperate.fly.bo.DataValue" extends="BaseResultMap" >
+    <result column="value" property="value" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, version_id, data_info_id
+  </sql>
+  <sql id="Blob_Column_List" >
+    value
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from data_value
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByVersion" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from data_value
+    where version_id = #{versionId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from data_value
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.cooperate.fly.bo.DataValue" >
+    insert into data_value (id, version_id, data_info_id, 
+      value)
+    values (#{id,jdbcType=INTEGER}, #{versionId,jdbcType=INTEGER}, #{dataInfoId,jdbcType=INTEGER}, 
+      #{value,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cooperate.fly.bo.DataValue" >
+    insert into data_value
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="versionId != null" >
+        version_id,
+      </if>
+      <if test="dataInfoId != null" >
+        data_info_id,
+      </if>
+      <if test="value != null" >
+        value,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="versionId != null" >
+        #{versionId,jdbcType=INTEGER},
+      </if>
+      <if test="dataInfoId != null" >
+        #{dataInfoId,jdbcType=INTEGER},
+      </if>
+      <if test="value != null" >
+        #{value,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cooperate.fly.bo.DataValue" >
+    update data_value
+    <set >
+      <if test="versionId != null" >
+        version_id = #{versionId,jdbcType=INTEGER},
+      </if>
+      <if test="dataInfoId != null" >
+        data_info_id = #{dataInfoId,jdbcType=INTEGER},
+      </if>
+      <if test="value != null" >
+        value = #{value,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.cooperate.fly.bo.DataValue" >
+    update data_value
+    set version_id = #{versionId,jdbcType=INTEGER},
+      data_info_id = #{dataInfoId,jdbcType=INTEGER},
+      value = #{value,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cooperate.fly.bo.DataValue" >
+    update data_value
+    set version_id = #{versionId,jdbcType=INTEGER},
+      data_info_id = #{dataInfoId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateCaogaoValue" parameterType="com.cooperate.fly.bo.DataValue" >
+    update data_value
+    set value = #{value,jdbcType=LONGVARCHAR}
+    where version_id = #{versionId,jdbcType=INTEGER} and data_info_id = #{dataInfoId,jdbcType=INTEGER}
+  </update>
+</mapper>

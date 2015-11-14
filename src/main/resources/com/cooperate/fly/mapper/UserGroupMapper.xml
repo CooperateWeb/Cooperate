@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cooperate.fly.mapper.UserGroupMapper" >
+  <resultMap id="BaseResultMap" type="com.cooperate.fly.bo.UserGroup" >
+    <id column="group_id" property="groupId" jdbcType="INTEGER" />
+    <result column="group_name" property="groupName" jdbcType="VARCHAR" />
+    <result column="group_no" property="groupNo" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="add_time" property="addTime" jdbcType="DATE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    group_id, group_name, group_no, remark, add_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_group
+    where group_id = #{groupId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByGroupName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_group
+    where group_name = #{groupName,jdbcType=VARCHAR}
+  </select>
+   <select id="selectAll" resultMap="BaseResultMap" >
+    select *
+    from user_group
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_group
+    where group_id = #{groupId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.cooperate.fly.bo.UserGroup" >
+    insert into user_group (group_id, group_name, group_no, 
+      remark, add_time)
+    values (#{groupId,jdbcType=INTEGER}, #{groupName,jdbcType=VARCHAR}, #{groupNo,jdbcType=INTEGER}, 
+      #{remark,jdbcType=VARCHAR}, #{addTime,jdbcType=DATE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cooperate.fly.bo.UserGroup" >
+    insert into user_group
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="groupId != null" >
+        group_id,
+      </if>
+      <if test="groupName != null" >
+        group_name,
+      </if>
+      <if test="groupNo != null" >
+        group_no,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="addTime != null" >
+        add_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="groupId != null" >
+        #{groupId,jdbcType=INTEGER},
+      </if>
+      <if test="groupName != null" >
+        #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="groupNo != null" >
+        #{groupNo,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cooperate.fly.bo.UserGroup" >
+    update user_group
+    <set >
+      <if test="groupName != null" >
+        group_name = #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="groupNo != null" >
+        group_no = #{groupNo,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null" >
+        add_time = #{addTime,jdbcType=DATE},
+      </if>
+    </set>
+    where group_id = #{groupId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cooperate.fly.bo.UserGroup" >
+    update user_group
+    set group_name = #{groupName,jdbcType=VARCHAR},
+      group_no = #{groupNo,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      add_time = #{addTime,jdbcType=DATE}
+    where group_id = #{groupId,jdbcType=INTEGER}
+  </update>
+</mapper>

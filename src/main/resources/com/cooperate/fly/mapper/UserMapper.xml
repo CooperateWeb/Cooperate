@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cooperate.fly.mapper.UserMapper" >
+  <resultMap id="BaseResultMap" type="com.cooperate.fly.bo.User" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="package_id" property="packageId" jdbcType="VARCHAR" />
+    <result column="role_id" property="roleId" jdbcType="INTEGER" />
+    <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="group_id" property="groupId" jdbcType="INTEGER" />
+    <result column="message" property="message" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, user_name, password, package_id, role_id, add_time, group_id, message
+  </sql>
+  <sql id="selectSql">
+	    SELECT 	u.id, 
+	    		u.user_name,
+	    		u.password,
+	    		u.package_id, 
+	    		u.role_id, 
+	    		r.role_name,
+	    		u.group_id,
+	    		g.group_name
+	    FROM user_info u
+	    LEFT JOIN user_role r ON u.role_id = r.role_id
+	    LEFT JOIN user_group g ON u.group_id = g.group_id
+	</sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByUserName" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_info
+    where user_name = #{userName,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    	<include refid="selectSql" />
+    order by u.add_time
+  </select>
+  <select id="selectByGroupId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_info
+    where group_id = #{groupId,jdbcType=INTEGER}
+  </select>
+  <select id="selectPage" resultMap="BaseResultMap" >
+    <include refid="selectSql" />
+    order by u.add_time
+  </select>
+  <select id="selectPageByParams" resultMap="BaseResultMap" >
+    <include refid="selectSql" />
+    <where>
+    	<if test="param1.groupId !=null">
+    		u.group_id = #{param1.groupId}
+    	</if>
+    </where>
+    order by u.add_time
+  </select>
+  <select id="loadUserByUserNameAndPassword" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_info u
+    WHERE u.user_name = #{param1} and u.password = #{param2}
+  </select>
+  <select id="countByUserName" resultType="int">
+		SELECT count(*) from user_info WHERE user_name = #{userName,jdbcType=VARCHAR}
+	</select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <update id="deleteMessageByUserName" parameterType="java.lang.String" >
+    update user_info set message = NULL
+    where user_name = #{userName,jdbcType=VARCHAR}
+  </update>
+  <insert id="insert" parameterType="com.cooperate.fly.bo.User" >
+    insert into user_info (id, user_name, password, 
+      package_id, role_id, add_time, 
+      group_id, message)
+    values (#{id,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{packageId,jdbcType=VARCHAR}, #{roleId,jdbcType=INTEGER}, #{addTime,jdbcType=TIMESTAMP}, 
+      #{groupId,jdbcType=INTEGER}, #{message,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cooperate.fly.bo.User" >
+    insert into user_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="packageId != null" >
+        package_id,
+      </if>
+      <if test="roleId != null" >
+        role_id,
+      </if>
+      <if test="addTime != null" >
+        add_time,
+      </if>
+      <if test="groupId != null" >
+        group_id,
+      </if>
+      <if test="message != null" >
+        message,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="packageId != null" >
+        #{packageId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null" >
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="groupId != null" >
+        #{groupId,jdbcType=INTEGER},
+      </if>
+      <if test="message != null" >
+        #{message,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cooperate.fly.bo.User" >
+    update user_info
+    <set >
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="packageId != null" >
+        package_id = #{packageId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null" >
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="addTime != null" >
+        add_time = #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="groupId != null" >
+        group_id = #{groupId,jdbcType=INTEGER},
+      </if>
+      <if test="message != null" >
+        message = #{message,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cooperate.fly.bo.User" >
+    update user_info
+    set user_name = #{userName,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      package_id = #{packageId,jdbcType=VARCHAR},
+      role_id = #{roleId,jdbcType=INTEGER},
+      add_time = #{addTime,jdbcType=TIMESTAMP},
+      group_id = #{groupId,jdbcType=INTEGER},
+      message = #{message,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateUserByRoleNull" parameterType="java.lang.Integer">
+	    update user_info u set u.role_id = null where u.role_id = #{roleId,jdbcType=INTEGER}
+	</update>
+	<update id="updatePassword">
+	    update user_info u set u.password = #{param2} where u.id = #{param1}
+	</update>
+</mapper>
