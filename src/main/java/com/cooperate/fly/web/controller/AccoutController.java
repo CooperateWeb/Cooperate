@@ -220,9 +220,9 @@ public class AccoutController {
 				String text = (msg.getMessage().length()<6)?msg.getMessage()+"     "+sdf.format(msg.getDate()):
 					msg.getMessage().substring(0, 6)+"..."+"    "+sdf.format(msg.getDate());
 				if(msg.getIs_read()==0)
-					node.setText("[未读] "+text);
+					node.setText("[未读]"+text);
 				else
-					node.setText("[已读] "+text);
+					node.setText("[已读]"+text);
 				root1.addChild(node);
 			}else if(msg.getDate().getTime()/DAY_MSECS==today.getTime()/DAY_MSECS-1){
 				node = new MessageNode();
@@ -230,7 +230,10 @@ public class AccoutController {
 				node.setParentId(2);
 				String text = (msg.getMessage().length()<6)?msg.getMessage()+"     "+sdf.format(msg.getDate()):
 					msg.getMessage().substring(0, 6)+"..."+"    "+sdf.format(msg.getDate());
-				node.setText(text);
+				if(msg.getIs_read()==0)
+					node.setText("[未读]"+text);
+				else
+					node.setText("[已读]"+text);
 				root2.addChild(node);
 			}else{
 				node = new MessageNode();
@@ -238,7 +241,10 @@ public class AccoutController {
 				node.setParentId(3);
 				String text = (msg.getMessage().length()<6)?msg.getMessage()+"     "+sdf.format(msg.getDate()):
 					msg.getMessage().substring(0, 6)+"..."+"    "+sdf.format(msg.getDate());
-				node.setText(text);
+				if(msg.getIs_read()==0)
+					node.setText("[未读]"+text);
+				else
+					node.setText("[已读]"+text);
 				root3.addChild(node);
 			}
 			node.setAttributes(msg);

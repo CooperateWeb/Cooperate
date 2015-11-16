@@ -2,8 +2,6 @@ package com.cooperate.fly.web.util;
 
 import java.util.List;
 
-import com.cooperate.fly.bo.PackageVersion;
-
 public class Result {
 
 	private boolean successful=true;

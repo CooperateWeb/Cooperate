@@ -38,9 +38,6 @@ public class WebFrontHelper {
 		
 		for (Map.Entry<Integer, CatalogNode> entry : map.entrySet()) {
 			CatalogNode node = entry.getValue();
-			
-		
-			
 			if(node.getId() != 0){
 				map.get(node.getParentId()).addChild(node);
 			}

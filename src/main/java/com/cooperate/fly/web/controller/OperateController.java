@@ -5,8 +5,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +37,8 @@ import com.cooperate.fly.mapper.UserMapper;
 import com.cooperate.fly.service.model.ModelDesign;
 import com.cooperate.fly.service.operator.DataOperate;
 import com.cooperate.fly.util.Constant;
+import com.cooperate.fly.web.util.CatalogNode;
+import com.cooperate.fly.web.util.DataInfoNode;
 import com.cooperate.fly.web.util.EasyUITreeNode;
 import com.cooperate.fly.web.util.Result;
 import com.google.gson.Gson;
@@ -110,15 +114,21 @@ public class OperateController {
 	@ResponseBody
 	public Result getDependency(@RequestParam(value="package_id",required=true) String id){
 		int package_id = Integer.parseInt(id);
+		Result result = new Result();
+		PackageVersion pv = dataOperate.getCaogao(package_id);
+		if(pv==null){
 		List<PackageInfo> up_package_list = dataOperate.getUpPackages(package_id);
 		List<PackageVersion> up_version_list = new ArrayList<PackageVersion>();
 		for(int i=0;i<up_package_list.size();i++){
 			up_version_list.addAll(dataOperate.getPackageVersions(up_package_list.get(i).getId()));
 		}
-		Result result = new Result();
 		result.setList1(up_version_list);
 		result.setList2(up_package_list);
 		return result;
+		}else{
+			result.setSuccessful(false);
+			return result;
+		}
 	}
 	
 	@RequestMapping(value="/submit_caogao",method=RequestMethod.POST)
@@ -137,7 +147,8 @@ public class OperateController {
 	
 	@RequestMapping(value="/edit_caogao",method=RequestMethod.POST)
 	@ResponseBody
-	public Result edit_caogao(@RequestParam(value="package_id",required=true) String id,@RequestParam(value="version_id",required=true) String version_id){
+	public Result edit_caogao(@RequestParam(value="package_id",required=true) String id,@RequestParam(value="version_id",required=true) String version_id
+			,Model model){
 		int package_id = Integer.parseInt(id);
 		int versionId = Integer.parseInt(version_id);
 		List<DataInfo> data_info_list = dataOperate.getDataOfPackage(package_id);
@@ -162,7 +173,16 @@ public class OperateController {
 	@RequestMapping(value="/commit_caogao",method=RequestMethod.POST)
 	@ResponseBody
 	public Result commit_caogao(@RequestParam(value="package_id",required=true) String id){
+		Result result = new Result();
 		int package_id = Integer.parseInt(id); 
+		int caogao_id = dataOperate.getCaogao(package_id).getId();
+		List<DataValue> caogao_value_list = dataOperate.getDataValueOfVersion(caogao_id);
+		for(int i=0;i<caogao_value_list.size();i++){
+			if(caogao_value_list.get(i).getValue()==""){
+				result.setSuccessful(false);
+				return result;
+			}
+		}
 		dataOperate.commitCaogao(package_id);
 		List<PackageVersion> list = dataOperate.getPackageVersions(package_id);
 		String s = "";
@@ -185,7 +205,6 @@ public class OperateController {
 				messagemapper.insertMessageByUserId(message);
 			}
 		}
-		Result result = new Result();
 		result.setList1(list);
 		result.setMessage(the_package.getName()+s);
 		return result;
